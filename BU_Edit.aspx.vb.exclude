@@ -1,0 +1,110 @@
+Imports System.Data
+Imports System.Data.SqlClient
+Partial Class BU_Edit
+    Inherits System.Web.UI.Page
+
+    Dim objConn As New SqlConnection
+    Dim objCmd As SqlCommand
+    Dim strConnString, strSQL As String
+
+    Protected Sub btnUpload_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload.Click
+        Me.pnlForm.Visible = False
+        Me.lblStatus.Text = "แก้ไขข้อมูลเสร็จแล้ว กลับสู่หน้าหลัก. Click <a href='Document.aspx'>here</a> to view."
+        If Me.txtName.Text = "" And Me.TextBox1.Text = "" And Me.TextBox2.Text = "" Then
+            Me.lblStatus.Text = "โปรดกรอกรายละเอียดให้ครบ."
+        Else
+
+            Update_Work()
+            '*** Update Name ***'
+            strSQL = "UPDATE WORK_DOCUMENT SET DOCUMENT_TYPE = @DOCUMENT_TYPE , DOCUMENT_DETAIL = @DOCUMENT_DETAIL , TEAM_OWER = @TEAM_OWER ,DATE_CREATE = @DATE_CREATE" & _
+                   " WHERE DOCUMENT_ID = @DOCUMENT_ID "
+
+            objCmd = New SqlCommand(strSQL, objConn)
+            objCmd.Parameters.Add("@DOCUMENT_TYPE", SqlDbType.VarChar).Value = txtName.Text
+            objCmd.Parameters.Add("@DOCUMENT_DETAIL", SqlDbType.VarChar).Value = Me.TextBox1.Text
+            objCmd.Parameters.Add("@TEAM_OWER", SqlDbType.VarChar).Value = Me.TextBox2.Text
+            objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+            objCmd.Parameters.Add("@DATE_CREATE", SqlDbType.DateTime).Value = Date.Now
+
+            objCmd.ExecuteNonQuery()
+
+            Me.lblStatus.Text = "แก้ไขข้อมูลเสร็จแล้ว กลับสู่หน้าหลัก. Click <a href='Document.aspx'>here</a> to view."
+        End If
+
+
+    End Sub
+    Protected Sub Update_Work()
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT * FROM WORK_DOCUMENT WHERE DOCUMENT_ID = @DOCUMENT_ID "
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+
+        ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+        'Me.txtName.Text = dt.Rows(0)("DOCUMENT_TYPE")
+        'Me.TextBox1.Text = dt.Rows(0)("DOCUMENT_DETAIL")
+        'Me.TextBox2.Text = dt.Rows(0)("TEAM_OWER")
+        'เพิ่มการทำงานสถานะใน table work_update  
+        If Me.txtName.Text <> dt.Rows(0)("DOCUMENT_TYPE") Then
+            UserClass.WORK_UPDATE_STATUS("5", "1", "2", dt.Rows(0)("DOCUMENT_TYPE"), Me.txtName.Text, Request.QueryString("DOCUMENT_ID"), UserLogin.UserName)
+        End If
+        If Me.TextBox1.Text <> dt.Rows(0)("DOCUMENT_DETAIL") Then
+            UserClass.WORK_UPDATE_STATUS("5", "2", "2", dt.Rows(0)("DOCUMENT_DETAIL"), Me.TextBox1.Text, Request.QueryString("DOCUMENT_ID"), UserLogin.UserName)
+        End If
+        If Me.TextBox2.Text <> dt.Rows(0)("TEAM_OWER") Then
+            UserClass.WORK_UPDATE_STATUS("5", "3", "2", dt.Rows(0)("TEAM_OWER"), Me.TextBox2.Text, Request.QueryString("DOCUMENT_ID"), UserLogin.UserName)
+        End If
+    End Sub
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        'Me.btnDel.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        strConnString = "Server=172.30.203.155;Uid=sa;PASSWORD=1234;database=Device_sa;Max Pool Size=400;Connect Timeout=600;"
+        objConn.ConnectionString = strConnString
+        objConn.Open()
+
+        If Not Page.IsPostBack() Then
+            ViewData()
+        End If
+    End Sub
+    Protected Sub ViewData()
+        '*** DataTable ***'
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT * FROM Business WHERE ID_BU = @ID_BU "
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        objCmd.Parameters.Add("@ID_BU", SqlDbType.Int).Value = Request.QueryString("ID_BU")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            Me.txtName.Text = dt.Rows(0)("Name")
+            Me.TextBox1.Text = dt.Rows(0)("DOCUMENT_DETAIL")
+            Me.TextBox2.Text = dt.Rows(0)("Location")
+            Me.TextBox3.Text = dt.Rows(0)("Gen")
+            Me.TextBox4.Text = dt.Rows(0)("Oil")
+            Me.TextBox5.Text = dt.Rows(0)("Adder")
+            Me.TextBox6.Text = dt.Rows(0)("Power")
+            Me.TextBox7.Text = dt.Rows(0)("Sale_Power")
+            Me.TextBox8.Text = dt.Rows(0)("Voltage")
+            Me.TextBox9.Text = dt.Rows(0)("Substation")
+            Me.TextBox10.Text = dt.Rows(0)("Feeder")
+            Me.TextBox11.Text = dt.Rows(0)("Date_Buy")
+            Me.TextBox12.Text = dt.Rows(0)("Date_Sale")
+            Me.TextBox13.Text = dt.Rows(0)("Gen_Side")
+            Me.TextBox14.Text = dt.Rows(0)("Promiss")
+            Me.TextBox15.Text = dt.Rows(0)("Tel")
+            Me.TextBox16.Text = dt.Rows(0)("Tel_Name")
+        End If
+
+
+        dt = Nothing
+    End Sub
+    Protected Sub Page_Unload(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Unload
+        objConn.Close()
+        objConn = Nothing
+    End Sub
+End Class

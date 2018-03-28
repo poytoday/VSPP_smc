@@ -1,0 +1,108 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default2.aspx.vb" Inherits="Default2" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+html{
+	padding:0px;
+	margin:0px;
+}
+div#map_canvas{
+	margin:auto;
+	width:500px;
+	height:450px;
+	overflow:hidden;
+}
+</style>
+
+</head>
+
+<body onload="Load_map()" onunload="GUnload()">
+
+<div id="map_canvas">
+</div> 
+
+
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAcNvUk-nhOGHxtqYjlYDTRRRn0sJCm-CFhvGa72HC9maIDPrX5RTjV4z1TYBiTrysASJhAHZCMDeQ_A" type="text/javascript"></script>
+<script type="text/javascript"> 
+
+function Load_map()
+{
+initialize(14.798783,100.652790)
+placeMarker(14.798783,100.652790)
+}
+function initialize(setLat,setLon) { 
+  if (GBrowserIsCompatible()) { 
+	var map = new GMap2(document.getElementById("map_canvas")); 
+	map.setCenter(new GLatLng(setLat,setLon), 13); 
+	map.setUIToDefault(); 
+  } 
+} 
+
+function placeMarker(setLat, setLon) {
+	
+		var message = "geotagged geo:lat=" + setLat + " geo:lon=" + setLon + " "; 
+		document.getElementById("geocode").value = message;
+		var messageRoboGEO = setLat + ";" + setLon + ""; 
+		document.getElementById("map_canvas").value = messageRoboGEO;
+	  
+		document.getElementById("geocode").focus();
+		document.getElementById("geocode").select();
+
+		document.getElementById("maplink").href = baseLink + "?lat=" + setLat + "&lon=" + setLon ;
+		document.getElementById("multimap").href = multimapBaseLink + "&lat=" + setLat + "&lon=" + setLon ;
+		document.getElementById("frmLat").value = setLat;
+		document.getElementById("frmLon").value = setLon;
+	  
+		var map = new GMap(document.getElementById("map"));
+		
+		map.addControl(new GSmallMapControl()); // added
+		map.addControl(new GMapTypeControl()); // added
+		map.centerAndZoom(new GPoint(setLon, setLat), 12);
+		
+		var point = new GPoint(setLon, setLat);
+		var marker = new GMarker(point);
+		map.addOverlay(marker);
+
+		GEvent.addListener(map, 'click', function(overlay, point) {
+			if (overlay) {
+				map.removeOverlay(overlay);
+			} else if (point) {
+				map.recenterOrPanToLatLng(point);
+				var marker = new GMarker(point);
+				map.addOverlay(marker);
+				var matchll = /\(([-.\d]*), ([-.\d]*)/.exec( point );
+				if ( matchll ) { 
+					var lat = parseFloat( matchll[1] );
+					var lon = parseFloat( matchll[2] );
+					lat = lat.toFixed(6);
+					lon = lon.toFixed(6);
+					var message = "geotagged geo:lat=" + lat + " geo:lon=" + lon + " "; 
+					var messageRoboGEO = lat + ";" + lon + ""; 
+				} else { 
+					var message = "<b>Error extracting info from</b>:" + point + ""; 
+					var messagRoboGEO = message;
+				}
+
+				marker.openInfoWindowHtml(message);
+				document.getElementById("geocode").value = message;
+				document.getElementById("map_canvas").value = messageRoboGEO;
+				document.getElementById("geocode").focus();
+				document.getElementById("geocode").select();
+
+				document.getElementById("maplink").href = baseLink + "?lat=" + lat + "&lon=" + lon ;
+				document.getElementById("multimap").href = multimapBaseLink + "&lat=" + lat + "&lon=" + lon ;
+				document.getElementById("frmLat").value = lat;
+				document.getElementById("frmLon").value = lon;
+
+			}
+		});
+	}
+    
+</script> 
+<script type="text/javascript"  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</body>
+</html>

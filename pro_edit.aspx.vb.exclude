@@ -1,0 +1,42 @@
+
+Imports System.Data
+Imports System.Data.SqlClient
+Partial Class pro_edit
+    Inherits System.Web.UI.Page
+    Dim objConn As New SqlConnection
+    Dim objCmd As SqlCommand
+    Dim strConnString, strSQL As String
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        strConnString = "Server=172.30.203.155;Uid=sa;PASSWORD=1234;database=Device_sa;Max Pool Size=400;Connect Timeout=600;"
+        objConn.ConnectionString = strConnString
+        objConn.Open()
+
+        If Not Page.IsPostBack() Then
+            ViewData()
+        End If
+    End Sub
+    Protected Sub Page_Unload(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Unload
+        objConn.Close()
+        objConn = Nothing
+    End Sub
+    Protected Sub ViewData()
+        '*** DataTable ***'
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT * FROM WORK_DOCUMENT WHERE DOCUMENT_ID = @DOCUMENT_ID "
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.txtName.Text = dt.Rows(0)("DOCUMENT_TYPE")
+            Me.TextBox1.Text = dt.Rows(0)("DOCUMENT_DETAIL")
+            Me.TextBox2.Text = dt.Rows(0)("TEAM_OWER")
+        End If
+
+        dt = Nothing
+    End Sub
+End Class

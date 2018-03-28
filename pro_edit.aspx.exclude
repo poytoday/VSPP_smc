@@ -1,0 +1,62 @@
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="pro_edit.aspx.vb" Inherits="pro_edit" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>Untitled Page</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+     <table id="tblMain" cellspacing="1" cellpadding="1" align='center' width='95%' border="0">
+                <tr>
+                    <td>
+                        <asp:Label ID="lblStatus" runat="server" Text="รายละเอียดการแก้ไข"></asp:Label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <asp:Panel ID="pnlForm" runat="server" Visible="true">
+                            <br />
+                            <table>
+                                <tr>
+                                    <td>
+                                        <asp:Label ID="lblName" runat="server" Text="ชื่อแฟ้ม :" Width="136px"></asp:Label>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="rfvUserName" runat="server" ControlToValidate="txtName"
+                                            Display="Dynamic" ErrorMessage="ไม่มีข้อมูล ชื่อแฟ้ม." Width="256px"></asp:RequiredFieldValidator></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:Label ID="Label1" runat="server" Text="รายละเอียดแฟ้ม :" Width="136px"></asp:Label>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="TextBox1" runat="server" Width="488px"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox1"
+                                            Display="Dynamic" ErrorMessage="ไม่มีข้อมูล รายละเอียดแฟ้ม." Width="240px"></asp:RequiredFieldValidator></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:Label ID="Label2" runat="server" Text="เจ้าของแฟ้ม :" Width="136px"></asp:Label>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBox2"
+                                            Display="Dynamic" ErrorMessage="ไม่มีข้อมูล เจ้าของแฟ้ม." Width="240px"></asp:RequiredFieldValidator></td>
+                                </tr>
+                            </table>
+                            <br />
+                            <asp:Button ID="btnUpload" runat="server" Text="Edit" Width="56px" />
+                            <input id="btnReset" type="reset" value="Reset" onclick="return btnReset_onclick()" />&nbsp;
+                        </asp:Panel>
+                    </td>
+                </tr>
+            </table>
+    
+    </div>
+    </form>
+</body>
+</html>

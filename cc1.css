@@ -1,0 +1,877 @@
+﻿1  //   Google Maps User Control for ASP.Net version 1.0:
+  2  //   ========================
+  3  //   Copyright (C) 2008  Shabdar Ghata 
+  4  //   Email : ghata2002@gmail.com
+  5  //   URL : http://www.shabdar.org
+  6  
+  7  //   This program is free software: you can redistribute it and/or modify
+  8  //   it under the terms of the GNU General Public License as published by
+  9  //   the Free Software Foundation, either version 3 of the License, or
+ 10  //   (at your option) any later version.
+ 11  
+ 12  //   This program is distributed in the hope that it will be useful,
+ 13  //   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 14  //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ 15  //   GNU General Public License for more details.
+ 16  
+ 17  //   You should have received a copy of the GNU General Public License
+ 18  //   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 19  
+ 20  //   This program comes with ABSOLUTELY NO WARRANTY.
+ 21  
+ 22  using System;
+ 23  using System.Data;
+ 24  using System.Configuration;
+ 25  using System.Web;
+ 26  using System.Web.Security;
+ 27  using System.Web.UI;
+ 28  using System.Web.UI.WebControls;
+ 29  using System.Web.UI.WebControls.WebParts;
+ 30  using System.Web.UI.HtmlControls;
+ 31  using System.Collections;
+ 32  using System.Drawing;
+ 33  
+ 34  /// <summary>
+ 35  /// Summary description for cGoogleMap
+ 36  /// </summary>
+ 37  /// 
+ 38  [Serializable] 
+ 39  public class GoogleObject
+ 40  {
+ 41      public GoogleObject()
+ 42      {
+ 43      }
+ 44  
+ 45      public GoogleObject(GoogleObject prev)
+ 46      {
+ 47          Points = GooglePoints.CloneMe(prev.Points);
+ 48          Polylines = GooglePolylines.CloneMe(prev.Polylines);
+ 49          Polygons = GooglePolygons.CloneMe(prev.Polygons);
+ 50          ZoomLevel = prev.ZoomLevel;
+ 51          ShowZoomControl = prev.ShowZoomControl;
+ 52          ShowMapTypesControl = prev.ShowMapTypesControl;
+ 53          Width = prev.Width;
+ 54          Height = prev.Height;
+ 55          MapType = prev.MapType;
+ 56          APIKey = prev.APIKey;
+ 57          ShowTraffic = prev.ShowTraffic;
+ 58          RecenterMap = prev.RecenterMap;
+ 59      }
+ 60  
+ 61      GooglePoints _gpoints = new GooglePoints();
+ 62      public GooglePoints Points
+ 63      {
+ 64          get { return _gpoints; }
+ 65          set { _gpoints = value; }
+ 66      }
+ 67  
+ 68      GooglePolylines _gpolylines = new GooglePolylines();
+ 69      public GooglePolylines Polylines
+ 70      {
+ 71          get { return _gpolylines; }
+ 72          set { _gpolylines = value; }
+ 73      }
+ 74  
+ 75      GooglePolygons _gpolygons = new GooglePolygons();
+ 76      public GooglePolygons Polygons
+ 77      {
+ 78          get { return _gpolygons; }
+ 79          set { _gpolygons = value; }
+ 80      }
+ 81  
+ 82      GooglePoint _centerpoint = new GooglePoint();
+ 83      public GooglePoint CenterPoint
+ 84      {
+ 85          get { return _centerpoint; }
+ 86          set { _centerpoint = value; }
+ 87      }
+ 88  
+ 89      int _zoomlevel = 3;
+ 90      public int ZoomLevel
+ 91      {
+ 92          get { return _zoomlevel; }
+ 93          set { _zoomlevel = value; }
+ 94      }
+ 95  
+ 96      bool _showzoomcontrol = true;
+ 97      public bool ShowZoomControl
+ 98      {
+ 99          get { return _showzoomcontrol; }
+100          set { _showzoomcontrol = value; }
+101      }
+102  
+103      bool _recentermap = false;
+104      public bool RecenterMap
+105      {
+106          get { return _recentermap; }
+107          set { _recentermap = value; }
+108      }
+109  
+110      bool _showtraffic = false;
+111      public bool ShowTraffic
+112      {
+113          get { return _showtraffic; }
+114          set { _showtraffic = value; }
+115      }
+116  
+117      bool _showmaptypescontrol = true;
+118      public bool ShowMapTypesControl
+119      {
+120          get { return _showmaptypescontrol; }
+121          set { _showmaptypescontrol = value; }
+122      }
+123  
+124      string _width = "500px";
+125      public string Width
+126      {
+127          get
+128          {
+129              return _width;
+130          }
+131          set
+132          {
+133              _width = value;
+134          }
+135      }
+136  
+137      string _height = "400px";
+138      public string Height
+139      {
+140          get
+141          {
+142              return _height;
+143          }
+144          set
+145          {
+146              _height = value;
+147          }
+148      }
+149  
+150  
+151      string _maptype = "";
+152      public string MapType
+153      {
+154          get
+155          {
+156              return _maptype;
+157          }
+158          set
+159          {
+160              _maptype = value;
+161          }
+162      }
+163  
+164      string _apikey = "";
+165      public string APIKey
+166      {
+167          get
+168          {
+169              return _apikey;
+170          }
+171          set
+172          {
+173              _apikey = value;
+174          }
+175      }
+176  
+177      string _apiversion = "2";
+178      public string APIVersion
+179      {
+180          get
+181          {
+182              return _apiversion;
+183          }
+184          set
+185          {
+186              _apiversion = value;
+187          }
+188      }
+189  
+190  }
+191  
+192  public class GooglePoint
+193  {
+194      public GooglePoint()
+195      {
+196      }
+197  
+198      string _pointstatus = ""; //N-New, D-Deleted, C-Changed, ''-No Action
+199      public string PointStatus
+200      {
+201          get { return _pointstatus; }
+202          set { _pointstatus = value; }
+203      }
+204  
+205      public GooglePoint(string pID,double plat, double plon, string picon, string pinfohtml)
+206      {
+207          ID = pID;
+208          Latitude = plat;
+209          Longitude = plon;
+210          IconImage = picon;
+211          InfoHTML = pinfohtml;
+212      }
+213  
+214      public GooglePoint(string pID, double plat, double plon, string picon, string pinfohtml,string pTooltipText,bool pDraggable)
+215      {
+216          ID = pID;
+217          Latitude = plat;
+218          Longitude = plon;
+219          IconImage = picon;
+220          InfoHTML = pinfohtml;
+221          ToolTip = pTooltipText;
+222          Draggable = pDraggable;
+223      }
+224  
+225      public GooglePoint(string pID, double plat, double plon, string picon)
+226      {
+227          ID = pID;
+228          Latitude = plat;
+229          Longitude = plon;
+230          IconImage = picon;
+231      }
+232  
+233      public GooglePoint(string pID, double plat, double plon)
+234      {
+235          ID = pID;
+236          Latitude = plat;
+237          Longitude = plon;
+238      }
+239  
+240      string _id = "";
+241      public string ID
+242      {
+243          get
+244          {
+245              return _id;
+246          }
+247          set
+248          {
+249              _id = value;
+250          }
+251      }
+252  
+253      string _icon = "";
+254      public string IconImage
+255      {
+256          get
+257          {
+258              return _icon;
+259          }
+260          set
+261          {
+262              
+263              //Get physical path of icon image. Necessary for Bitmap object.
+264              string sIconImage = value;
+265              if (sIconImage == "")
+266                  return;
+267              string ImageIconPhysicalPath = cCommon.GetLocalPath() + sIconImage.Replace("/", "\\");
+268              //Find width and height of icon using Bitmap image.
+269  
+270  
+271              using (System.Drawing.Image img = System.Drawing.Image.FromFile(ImageIconPhysicalPath))
+272              {
+273                  IconImageWidth = img.Width;
+274                  IconImageHeight = img.Height;
+275              }
+276              _icon = cCommon.GetHttpURL() + sIconImage;
+277  
+278  
+279              _icon = value;
+280          }
+281      }
+282  
+283      int _iconimagewidth = 32;
+284      public int IconImageWidth
+285      {
+286          get
+287          {
+288              return _iconimagewidth;
+289          }
+290          set
+291          {
+292              _iconimagewidth = value;
+293          }
+294      }
+295  
+296      bool _draggable = false;
+297      public bool Draggable
+298      {
+299          get
+300          {
+301              return _draggable;
+302          }
+303          set
+304          {
+305              _draggable = value;
+306          }
+307      }
+308  
+309      int _iconimageheight = 32;
+310      public int IconImageHeight
+311      {
+312          get
+313          {
+314              return _iconimageheight;
+315          }
+316          set
+317          {
+318              _iconimageheight = value;
+319          }
+320      }
+321  
+322      double _lat = 0.0;
+323      public double Latitude
+324      {
+325          get
+326          {
+327              return _lat;
+328          }
+329          set
+330          {
+331              _lat = value;
+332          }
+333      }
+334  
+335      double _lon = 0.0;
+336      public double Longitude
+337      {
+338          get
+339          {
+340              return _lon;
+341          }
+342          set
+343          {
+344              _lon = value;
+345          }
+346      }
+347  
+348      string _infohtml = "";
+349      public string InfoHTML
+350      {
+351          get
+352          {
+353              return _infohtml;
+354          }
+355          set
+356          {
+357              _infohtml = value;
+358          }
+359      }
+360  
+361      string _tooltip = "";
+362      public string ToolTip
+363      {
+364          get
+365          {
+366              return _tooltip;
+367          }
+368          set
+369          {
+370              _tooltip = value;
+371          }
+372      }
+373  
+374      public override bool Equals(System.Object obj)
+375      {
+376          // If parameter is null return false.
+377          if (obj == null)
+378          {
+379              return false;
+380          }
+381  
+382          // If parameter cannot be cast to Point return false.
+383          GooglePoint p = obj as GooglePoint;
+384          if ((System.Object)p == null)
+385          {
+386              return false;
+387          }
+388  
+389          // Return true if the fields match:
+390          return (InfoHTML == p.InfoHTML) && (IconImage == p.IconImage) && (p.ID==ID) && (p.Latitude==Latitude) && (p.Longitude==Longitude);
+391      }
+392  }
+393  
+394  public class GooglePoints : CollectionBase
+395  {
+396  
+397      public GooglePoints()
+398      {
+399      }
+400  
+401      public static GooglePoints CloneMe(GooglePoints prev)
+402      {
+403          GooglePoints p = new GooglePoints();
+404          for (int i = 0; i < prev.Count; i++)
+405          {
+406              p.Add(new GooglePoint(prev[i].ID, prev[i].Latitude, prev[i].Longitude, prev[i].IconImage, prev[i].InfoHTML,prev[i].ToolTip,prev[i].Draggable));
+407          }
+408          return p;
+409      }
+410   
+411  
+412      public GooglePoint this[int pIndex]
+413      {
+414          get
+415          {
+416              return (GooglePoint)this.List[pIndex];
+417          }
+418          set
+419          {
+420              this.List[pIndex] = value;
+421          }
+422      }
+423  
+424      public GooglePoint this[string pID]
+425      {
+426          get
+427          {
+428              for (int i = 0; i < Count; i++)
+429              {
+430                  if (this[i].ID == pID)
+431                  {
+432                      return (GooglePoint)this.List[i];
+433                  }
+434              }
+435              return null;
+436          }
+437          set
+438          {
+439              for (int i = 0; i < Count; i++)
+440              {
+441                  if (this[i].ID == pID)
+442                  {
+443                      this.List[i] = value;
+444                  }
+445              }
+446          }
+447  
+448      }
+449  
+450      public void Add(GooglePoint pPoint)
+451      {
+452          this.List.Add(pPoint);
+453      }
+454      public void Remove(int pIndex)
+455      {
+456          this.RemoveAt(pIndex);
+457      }
+458      public void Remove(string pID)
+459      {
+460          for (int i = 0; i < Count; i++)
+461          {
+462              if (this[i].ID == pID)
+463              {
+464                  this.List.RemoveAt(i);
+465                  return;
+466              }
+467          }
+468      }
+469  
+470      public override bool Equals(System.Object obj)
+471      {
+472          // If parameter is null return false.
+473          if (obj == null)
+474          {
+475              return false;
+476          }
+477  
+478          // If parameter cannot be cast to Point return false.
+479          GooglePoints p = obj as GooglePoints;
+480          if ((System.Object)p == null)
+481          {
+482              return false;
+483          }
+484  
+485          if(p.Count!=Count)
+486              return false;
+487  
+488  
+489          for(int i=0;i<p.Count;i++)
+490          {
+491              if(!this[i].Equals(p[i]))
+492                  return false;
+493          }
+494          // Return true if the fields match:
+495          return true;
+496      }
+497  }
+498  
+499  public class GooglePolyline
+500  {
+501      string _linestatus = ""; //N-New, D-Deleted, C-Changed, ''-No Action
+502      public string LineStatus
+503      {
+504          get { return _linestatus; }
+505          set { _linestatus = value; }
+506      }
+507  
+508      string _id = "";
+509      public string ID
+510      {
+511          get { return _id; }
+512          set { _id = value; } 
+513      }
+514  
+515      GooglePoints _gpoints=new GooglePoints();
+516      public GooglePoints Points
+517      {
+518          get { return _gpoints; }
+519          set { _gpoints = value; }
+520      }
+521  
+522      string _colorcode = "#66FF00";
+523      public string ColorCode
+524      {
+525          get { return _colorcode; }
+526          set { _colorcode = value; }
+527      }
+528  
+529      int _width = 10;
+530      public int Width
+531      {
+532          get { return _width; }
+533          set { _width = value; }
+534      }
+535  
+536      bool _geodesic = false;
+537      public bool Geodesic
+538      {
+539          get { return _geodesic; }
+540          set { _geodesic = value; }
+541      }
+542  
+543      public override bool Equals(System.Object obj)
+544      {
+545          // If parameter is null return false.
+546          if (obj == null)
+547          {
+548              return false;
+549          }
+550  
+551          // If parameter cannot be cast to Point return false.
+552          GooglePolyline p = obj as GooglePolyline;
+553          if ((System.Object)p == null)
+554          {
+555              return false;
+556          }
+557  
+558          // Return true if the fields match:
+559          return (Geodesic == p.Geodesic) && (Width == p.Width) && (p.ID == ID) && (p.ColorCode == ColorCode) && (p.Points.Equals(Points));
+560      }
+561  
+562  }
+563  
+564  public class GooglePolylines : CollectionBase
+565  {
+566  
+567      public GooglePolylines()
+568      {
+569      }
+570  
+571      public static GooglePolylines CloneMe(GooglePolylines prev)
+572      {
+573          GooglePolylines p = new GooglePolylines();
+574          for (int i = 0; i < prev.Count; i++)
+575          {
+576              GooglePolyline GPL = new GooglePolyline();
+577              GPL.ColorCode = prev[i].ColorCode;
+578              GPL.Geodesic = prev[i].Geodesic;
+579              GPL.ID = prev[i].ID;
+580              GPL.Points = GooglePoints.CloneMe(prev[i].Points);
+581              GPL.Width = prev[i].Width;
+582              p.Add(GPL);
+583          }
+584          return p;
+585      }
+586  
+587      public GooglePolyline this[int pIndex]
+588      {
+589          get
+590          {
+591              return (GooglePolyline)this.List[pIndex];
+592          }
+593          set
+594          {
+595              this.List[pIndex] = value;
+596          }
+597      }
+598  
+599      public GooglePolyline this[string pID]
+600      {
+601          get
+602          {
+603              for (int i = 0; i < Count; i++)
+604              {
+605                  if (this[i].ID == pID)
+606                  {
+607                      return (GooglePolyline)this.List[i];
+608                  }
+609              }
+610              return null;
+611          }
+612          set
+613          {
+614              for (int i = 0; i < Count; i++)
+615              {
+616                  if (this[i].ID == pID)
+617                  {
+618                      this.List[i] = value;
+619                  }
+620              }
+621          }
+622      }
+623  
+624      public void Add(GooglePolyline pPolyline)
+625      {
+626          this.List.Add(pPolyline);
+627      }
+628      public void Remove(int pIndex)
+629      {
+630          this.RemoveAt(pIndex);
+631      }
+632      public void Remove(string pID)
+633      {
+634          for (int i = 0; i < Count; i++)
+635          {
+636              if (this[i].ID == pID)
+637              {
+638                  this.List.RemoveAt(i);
+639                  return;
+640              }
+641          }
+642      }
+643  
+644  }
+645  
+646  
+647  public sealed class GoogleMapType
+648  {
+649      public const string NORMAL_MAP = "G_NORMAL_MAP";
+650      public const string SATELLITE_MAP = "G_SATELLITE_MAP";
+651      public const string HYBRID_MAP = "G_HYBRID_MAP";
+652  }
+653  
+654  public class cCommon
+655  {
+656      public cCommon()
+657      {
+658          //
+659          // TODO: Add constructor logic here
+660          //
+661      }
+662      public static Random random = new Random();
+663  
+664      public static string GetHttpURL()
+665      {
+666          string[] s = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Split(new char[] { '/' });
+667          string path = s[0] + "/";
+668          for (int i = 1; i < s.Length - 1; i++)
+669          {
+670              path = path + s[i] + "/";
+671          }
+672          return path;
+673      }
+674  
+675      public static string GetLocalPath()
+676      {
+677          string[] s = System.Web.HttpContext.Current.Request.Url.AbsoluteUri.Split(new char[] { '/' });
+678          string PageName = s[s.Length - 1];
+679          s = System.Web.HttpContext.Current.Request.MapPath(PageName).Split(new char[] { '\\' });
+680          string path = s[0] + "\\";
+681          for (int i = 1; i < s.Length - 1; i++)
+682          {
+683              path = path + s[i] + "\\";
+684          }
+685          return path;
+686      }
+687  
+688      public static decimal RandomNumber(decimal min, decimal max)
+689      {
+690          decimal Fractions = 10000000;
+691          int iMin = (int)GetIntegerPart(min * Fractions);
+692          int iMax = (int)GetIntegerPart(max * Fractions);
+693          int iRand = random.Next(iMin, iMax);
+694  
+695          decimal dRand = (decimal)iRand;
+696          dRand = dRand / Fractions;
+697  
+698          return dRand;
+699      }
+700  
+701  
+702      public static decimal GetFractional(decimal source)
+703      {
+704          return source % 1.0m;
+705      }
+706  
+707      public static decimal GetIntegerPart(decimal source)
+708      {
+709          return decimal.Parse(source.ToString("#.00"));
+710      }
+711  
+712  }
+713  
+714  public class GooglePolygon
+715  {
+716      string _status = ""; //N-New, D-Deleted, C-Changed, ''-No Action
+717      public string Status
+718      {
+719          get { return _status; }
+720          set { _status = value; }
+721      }
+722  
+723      string _id = "";
+724      public string ID
+725      {
+726          get { return _id; }
+727          set { _id = value; }
+728      }
+729  
+730      GooglePoints _gpoints = new GooglePoints();
+731      public GooglePoints Points
+732      {
+733          get { return _gpoints; }
+734          set { _gpoints = value; }
+735      }
+736  
+737      string _strokecolor = "#0000FF";
+738      public string StrokeColor
+739      {
+740          get { return _strokecolor; }
+741          set { _strokecolor = value; }
+742      }
+743  
+744      string _fillcolor = "#66FF00";
+745      public string FillColor
+746      {
+747          get { return _fillcolor; }
+748          set { _fillcolor = value; }
+749      }
+750  
+751      int _strokeweight = 10;
+752      public int StrokeWeight
+753      {
+754          get { return _strokeweight; }
+755          set { _strokeweight = value; }
+756      }
+757  
+758      double _strokeopacity = 1;
+759      public double StrokeOpacity
+760      {
+761          get { return _strokeopacity; }
+762          set { _strokeopacity = value; }
+763      }
+764  
+765      double _fillopacity = 0.2;
+766      public double FillOpacity
+767      {
+768          get { return _fillopacity; }
+769          set { _fillopacity = value; }
+770      }
+771  
+772      public override bool Equals(System.Object obj)
+773      {
+774          // If parameter is null return false.
+775          if (obj == null)
+776          {
+777              return false;
+778          }
+779  
+780          // If parameter cannot be cast to Point return false.
+781          GooglePolygon p = obj as GooglePolygon;
+782          if ((System.Object)p == null)
+783          {
+784              return false;
+785          }
+786  
+787          // Return true if the fields match:
+788          return (FillColor == p.FillColor) && (FillOpacity == p.FillOpacity) && (p.ID == ID) && (p.Status == Status) && (p.StrokeColor == StrokeColor) && (p.StrokeOpacity == StrokeOpacity) && (p.StrokeWeight == StrokeWeight) && (p.Points.Equals(Points));
+789      }
+790  
+791  }
+792  
+793  public class GooglePolygons : CollectionBase
+794  {
+795  
+796      public GooglePolygons()
+797      {
+798      }
+799  
+800      public static GooglePolygons CloneMe(GooglePolygons prev)
+801      {
+802          GooglePolygons p = new GooglePolygons();
+803          for (int i = 0; i < prev.Count; i++)
+804          {
+805              GooglePolygon GPL = new GooglePolygon();
+806              GPL.FillColor = prev[i].FillColor;
+807              GPL.FillOpacity = prev[i].FillOpacity;
+808              GPL.ID = prev[i].ID;
+809              GPL.Status = prev[i].Status;
+810              GPL.StrokeColor = prev[i].StrokeColor;
+811              GPL.StrokeOpacity = prev[i].StrokeOpacity;
+812              GPL.StrokeWeight = prev[i].StrokeWeight;
+813              GPL.Points = GooglePoints.CloneMe(prev[i].Points);
+814              p.Add(GPL);
+815          }
+816          return p;
+817      }
+818  
+819      public GooglePolygon this[int pIndex]
+820      {
+821          get
+822          {
+823              return (GooglePolygon)this.List[pIndex];
+824          }
+825          set
+826          {
+827              this.List[pIndex] = value;
+828          }
+829      }
+830  
+831      public GooglePolygon this[string pID]
+832      {
+833          get
+834          {
+835              for (int i = 0; i < Count; i++)
+836              {
+837                  if (this[i].ID == pID)
+838                  {
+839                      return (GooglePolygon)this.List[i];
+840                  }
+841              }
+842              return null;
+843          }
+844          set
+845          {
+846              for (int i = 0; i < Count; i++)
+847              {
+848                  if (this[i].ID == pID)
+849                  {
+850                      this.List[i] = value;
+851                  }
+852              }
+853          }
+854      }
+855  
+856      public void Add(GooglePolygon pPolygon)
+857      {
+858          this.List.Add(pPolygon);
+859      }
+860      public void Remove(int pIndex)
+861      {
+862          this.RemoveAt(pIndex);
+863      }
+864      public void Remove(string pID)
+865      {
+866          for (int i = 0; i < Count; i++)
+867          {
+868              if (this[i].ID == pID)
+869              {
+870                  this.List.RemoveAt(i);
+871                  return;
+872              }
+873          }
+874      }
+875  
+876  }
+877  

@@ -1,0 +1,22 @@
+
+Partial Class Admin_user
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        If Session("Login") = 0 Then
+            UserClass.CheckLogin(Page)
+
+            If Not func.CheckUserPermissions("admin.aspx", "S") Then
+                Response.Write("<p>" + "You don't have permissions to access this page" + "<a href=""login.aspx"">&nbsp;" + "Back to login page" + "</a></p>")
+                Response.End()
+            Else
+                UserClass.login_page(UserLogin.UserName, "Admin_user.aspx", "View")
+            End If
+        Else
+            Response.Write("<p>" + "You don't have permissions to access this page" + "<a href=""login.aspx"">&nbsp;" + "Back to login page" + "</a></p>")
+            Response.End()
+        End If
+
+    End Sub
+End Class

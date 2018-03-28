@@ -1,0 +1,53 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Admin_his.aspx.vb" Inherits="Admin_his" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ Register TagPrefix="poy" TagName="footer" Src="~/UC_footer.ascx" %>
+<%@ Register TagPrefix="poy" TagName="header" Src="~/UC_header.ascx" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>แก้ไขสิทธิ์การเข้าถึง</title>
+    <link href="include/style.css" type="text/css" rel="stylesheet" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="images/CitrusIsland.css" type="text/css" />
+    <link href="images/CitrusIsland.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="wrap">
+        <poy:header ID="footer2" runat="server" />
+        <div id="menu">
+            <ul>
+                <li><a href="Login.aspx">Login</a></li>
+                <li><a href="View_Data_Bu.aspx">Data</a> </li>
+                <li><a href="Default.aspx">VSPP</a></li>
+                <li><a href="Add_pro.aspx">Cattalog</a></li>
+                <li><a href="Report.aspx">Report</a></li>
+                <li id="current" onclick="return LI1_onclick()"><a href="admin.aspx">Admin</a></li>
+                <li><a href="Mylink.aspx">My Link</a></li>
+                <li><a href="User_profile.aspx">Profile</a></li>
+                <li><a href="vdo.aspx">E-Leanning</a> </li>
+        </div>
+        <form id="form1" runat="server">
+            &nbsp;
+            <br />
+            &#3611;&#3619;&#3632;&#3623;&#3633;&#3605;&#3636;&#3585;&#3634;&#3619;&#3651;&#3594;&#3657;&#3591;&#3634;&#3609;<asp:GridView
+                ID="GridView2" runat="server" DataSourceID="SqlDataSource2" EmptyDataText="No records found"
+                AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" BorderStyle="Dotted"
+                CssClass="Grid" Width="99%" PageSize="30">
+                <Columns>
+                    <asp:BoundField DataField="Login_Type" HeaderText="Login_Type" SortExpression="Login_Type" />
+                    <asp:BoundField DataField="Page" HeaderText="Page" SortExpression="Page" />
+                    <asp:BoundField DataField="Login_Time" HeaderText="Login_Time" SortExpression="Login_Time" />
+                    <asp:BoundField DataField="ID_PEA" HeaderText="ID_PEA" SortExpression="ID_PEA" />
+                    <asp:BoundField DataField="Names" HeaderText="Names" ReadOnly="True" SortExpression="Names" />
+                </Columns>
+                <FooterStyle HorizontalAlign="Center" />
+            </asp:GridView>
+            <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="<%$ ConnectionStrings:VSPP %>"
+                SelectCommand="SELECT VSPP_HIS.Login_Type, VSPP_HIS.Page, VSPP_HIS.Login_Time, Names.ID_PEA, Names.First_Name + ' ' + Names.Last_Name AS Names FROM counter.VSPP_HIS INNER JOIN counter.Names ON VSPP_HIS.Login_Name = Names.ID_PEA ORDER BY VSPP_HIS.Login_Time DESC">
+            </asp:SqlDataSource>
+            <br />
+            <poy:footer ID="footer1" runat="server" />
+        </form>
+    </div>
+</body>
+</html>

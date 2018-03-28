@@ -1,0 +1,41 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="admin.aspx.vb" Inherits="admin" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ Register TagPrefix="poy" TagName="footer" Src="~/UC_footer.ascx" %>
+<%@ Register TagPrefix="poy" TagName="header" Src="~/UC_header.ascx" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <title>แก้ไขสิทธิ์การเข้าถึง</title>
+    <link href="include/style.css" type="text/css" rel="stylesheet" />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href="images/CitrusIsland.css" type="text/css" />
+    <link href="images/CitrusIsland.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="wrap">
+        <poy:header ID="footer2" runat="server" />
+        <div id="menu">
+            <ul>
+                <li><a href="Login.aspx">Login</a></li>
+                <li><a href="View_Data_Bu.aspx">Data</a> </li>
+                <li><a href="Default.aspx">VSPP</a></li>
+                <li><a href="Add_pro.aspx">Cattalog</a></li>
+                <li><a href="Report.aspx">Report</a></li>
+                <li id="current" onclick="return LI1_onclick()"><a href="admin.aspx">Admin</a></li>
+                <li><a href="Mylink.aspx">My Link</a></li>
+            <li><a href="User_profile.aspx">Profile</a></li>
+            <li ><a href="vdo.aspx">E-Leanning</a> </li>
+        </div>
+        <form id="form1" runat="server">
+            <div>
+                <h1>
+                    <li><a href="Admin_user.aspx">รายละเอียดผู้ใช้งาน</a></li>
+                    <li><a href="Admin_his.aspx">รายละเอียดการปฎิบัติงาน</a></li>
+                    <li><a href="Admin_login.aspx">รายละเอียดการเข้าใช้งาน</a></li>
+                </h1>
+            </div>
+            <poy:footer ID="footer1" runat="server" />
+        </form>
+    </div>
+</body>
+</html>

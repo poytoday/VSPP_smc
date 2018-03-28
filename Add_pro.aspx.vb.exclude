@@ -1,0 +1,605 @@
+Imports System
+Imports System.Data
+Imports System.Web.UI.WebControls
+Imports System.Collections
+Imports System.Configuration
+Imports System.Threading
+Imports System.Globalization
+Imports System.data.OleDb
+Imports System.IO
+Imports System.Data.SqlClient
+Partial Class Add_pro
+
+    Inherits System.Web.UI.Page
+
+    Dim index_DB As String
+    Dim objConn As New SqlConnection
+    Dim objCmd As SqlCommand
+    Dim strConnString, strSQL As String
+
+    Protected Sub UPDATE_STATUS(ByVal solution As String, ByVal Before As String, ByVal After As String, ByVal Type As String, ByVal UserName As String)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_LOG]", StrCon)
+        Adpt.Fill(Ds, "VSPP_LOG")
+        Dt = Ds.Tables("VSPP_LOG")
+        Dr = Dt.NewRow
+        Dr("Solution") = solution
+        Dr("Before") = Before
+        Dr("After") = After
+        Dr("UserName") = UserName
+        Dr("Type") = Type
+        Dr("Date_status") = Date.Now
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_LOG")
+        Ds.AcceptChanges()
+    End Sub
+
+    Protected Sub btnAdd_Click2(ByVal sender As Object, ByVal e As System.EventArgs) Handles Linkbutton1.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_OIL]", StrCon)
+        Adpt.Fill(Ds, "VSPP_OIL")
+        Dt = Ds.Tables("VSPP_OIL")
+        Dr = Dt.NewRow
+        Dr("OIL_TYPE") = Me.TextBox1.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_OIL")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.TextBox1.Text, "OIL_TYPE", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.TextBox1.Text = ""
+        Me.SqlDataSource2.DataBind()
+        Me.DD_oil.DataBind()
+    End Sub
+
+    Protected Sub btnAdd_Click3(ByVal sender As Object, ByVal e As System.EventArgs) Handles Linkbutton2.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_ADDER_TYPE]", StrCon)
+        Adpt.Fill(Ds, "VSPP_ADDER_TYPE")
+        Dt = Ds.Tables("VSPP_ADDER_TYPE")
+        Dr = Dt.NewRow
+        Dr("ADDER_TYPE") = Me.TextBox2.Text
+        'Dr("Price") = Me.TextBox15.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_ADDER_TYPE")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.TextBox2.Text, "ADDER_TYPE", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.TextBox2.Text = ""
+        Me.SqlDataSource3.DataBind()
+        Me.DD_adder.DataBind()
+    End Sub
+    Protected Sub btnAdd_Click5(ByVal sender As Object, ByVal e As System.EventArgs) Handles Linkbutton4.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_SIDE]", StrCon)
+        Adpt.Fill(Ds, "VSPP_SIDE")
+        Dt = Ds.Tables("VSPP_SIDE")
+        Dr = Dt.NewRow
+        Dr("SIDE_TYPE") = Me.TextBox7.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_SIDE")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.TextBox7.Text, "SIDE_TYPE", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.TextBox7.Text = ""
+        Me.SqlDataSource5.DataBind()
+        Me.DD_side.DataBind()
+    End Sub
+
+    Protected Sub btnAdd_Click6(ByVal sender As Object, ByVal e As System.EventArgs) Handles Linkbutton5.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_STATUS]", StrCon)
+        Adpt.Fill(Ds, "VSPP_STATUS")
+        Dt = Ds.Tables("VSPP_STATUS")
+        Dr = Dt.NewRow
+        Dr("Status_Type") = Me.TextBox5.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_STATUS")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.TextBox5.Text, "Status_Type", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.TextBox5.Text = ""
+        Me.SqlDataSource6.DataBind()
+        Me.DD_status.DataBind()
+    End Sub
+
+    Protected Sub btnAdd_Click7(ByVal sender As Object, ByVal e As System.EventArgs) Handles Linkbutton6.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_SUB]", StrCon)
+        Adpt.Fill(Ds, "VSPP_SUB")
+        Dt = Ds.Tables("VSPP_SUB")
+        Dr = Dt.NewRow
+        Dr("Sub_name") = Me.TextBox6.Text
+        Dr("Feeder") = Me.TextBox16.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_SUB")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.TextBox6.Text, "Sub_name", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.TextBox6.Text = ""
+        Me.SqlDataSource7.DataBind()
+        Me.DD_sub.DataBind()
+    End Sub
+
+    Protected Sub btnAdd_Click8(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton7.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_Feeder]", StrCon)
+        Adpt.Fill(Ds, "VSPP_Feeder")
+        Dt = Ds.Tables("VSPP_Feeder")
+        Dr = Dt.NewRow
+        Dr("Feeder") = Me.TextBox4.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_Feeder")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.TextBox4.Text, "Feeder", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.TextBox4.Text = ""
+        Me.SqlDataSource8.DataBind()
+        Me.DD_feeder.DataBind()
+    End Sub
+
+    Protected Sub btnAdd_Click1(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnAdd.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        ' Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Dim Ds As New DataSet
+        Dim Dt As DataTable
+        Dim Dr As DataRow
+        Dim StrCon As New SqlConnection("Server=172.30.203.155; uid=sa;pwd=1234; database= SA_System")
+        Dim Adpt As New SqlDataAdapter("SELECT * FROM counter.[VSPP_GEN]", StrCon)
+        Adpt.Fill(Ds, "VSPP_GEN")
+        Dt = Ds.Tables("VSPP_GEN")
+        Dr = Dt.NewRow
+        Dr("GEN_TYPE") = Me.txtName.Text
+        Dt.Rows.Add(Dr)
+        Dim cdb As New SqlCommandBuilder(Adpt)
+        Adpt.Update(Ds, "VSPP_GEN")
+        Ds.AcceptChanges()
+        Me.UPDATE_STATUS("CREATE", "-", Me.txtName.Text, "GEN_TYPE", UserLogin.UserName)
+        'Me.rfvUserName.Text = "เพิ่ม" & Me.txtName.Text & "ลงฐานข้อมูลแล้ว")
+        Me.txtName.Text = ""
+        Me.SqlDataSource1.DataBind()
+        Me.DD_gen.DataBind()
+    End Sub
+
+    Protected Sub LinkButton3_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton3.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        Me.Disable_Detail_Edit()
+        index_DB = "VSPP_GEN"
+        Me.Panel1.Visible = True
+        'lblName.Text = "ประเภทโรงไฟฟ้า :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT * FROM counter.VSPP_GEN WHERE VSPP_GEN_ID  = '" & Me.DD_gen.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox3.Text = dt.Rows(0)("GEN_TYPE")
+            Me.Label2.Text = dt.Rows(0)("GEN_TYPE")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        Me.btnDel.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        Me.Button7.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        Me.Button8.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        Me.Button9.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        Me.Button10.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        Me.Button11.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+        Me.Button12.Attributes.Add("OnClick", "return confirm('Are you sure delete?');")
+
+        strConnString = "Server=172.30.203.155;Uid=sa;PASSWORD=1234;database= SA_System;Max Pool Size=400;Connect Timeout=600;"
+        objConn.ConnectionString = strConnString
+        objConn.Open()
+
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        If Session("Login") = 0 Then
+            UserClass.CheckLogin(Page)
+            If Not func.CheckUserPermissions("Add_pro.aspx", "S") Then
+                Response.Write("<p>" + "You don't have permissions to access this page" + "<a href=""login.aspx"">&nbsp;" + "Back to login page" + "</a></p>")
+                Response.End()
+            Else
+                UserClass.login_page(UserLogin.UserName, "Add_pro.aspx", "View")
+            End If
+        Else
+            Response.Write("<p>" + "You don't have permissions to access this page" + "<a href=""login.aspx"">&nbsp;" + "Back to login page" + "</a></p>")
+            Response.End()
+        End If
+    End Sub
+
+
+
+
+    Protected Sub LinkButton8_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton8.Click
+        Me.Disable_Detail_Edit()
+        index_DB = "VSPP_OIL"
+        Me.Panel2.Visible = True
+        'lblName.Text = "ประเภทเชื้อเพลิง :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT OIL_TYPE, OIL_ID FROM counter.VSPP_OIL WHERE OIL_ID  = '" & Me.DD_oil.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox8.Text = dt.Rows(0)("OIL_TYPE")
+            Me.Label2.Text = dt.Rows(0)("OIL_TYPE")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub LinkButton9_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton9.Click
+        Me.Disable_Detail_Edit()
+        index_DB = "Adder"
+        Me.Panel3.Visible = True
+        'lblName.Text = "Adder :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT * FROM counter.VSPP_ADDER_TYPE WHERE ADDER_ID  = '" & Me.DD_adder.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox9.Text = dt.Rows(0)("ADDER_TYPE")
+            Me.TextBox14.Text = dt.Rows(0)("Price")
+            Me.Label2.Text = dt.Rows(0)("ADDER_TYPE")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub LinkButton10_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton10.Click
+        Me.Disable_Detail_Edit()
+        index_DB = "SIDE_TYPE"
+        Me.Panel4.Visible = True
+        'lblName.Text = "ขนาดผู้ผลิต :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT SIDE_TYPE, SIDE_ID FROM counter.VSPP_SIDE WHERE SIDE_ID  = '" & Me.DD_side.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox10.Text = dt.Rows(0)("SIDE_TYPE")
+            Me.Label2.Text = dt.Rows(0)("SIDE_TYPE")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub LinkButton11_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton11.Click
+        Me.Disable_Detail_Edit()
+        index_DB = "Status_Type"
+        Me.Panel5.Visible = True
+        ' lblName.Text = "สถานะงาน :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT Status_Type, ID_STATUS FROM counter.VSPP_STATUS WHERE ID_STATUS  = '" & Me.DD_status.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox11.Text = dt.Rows(0)("Status_Type")
+            Me.Label2.Text = dt.Rows(0)("Status_Type")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub LinkButton12_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton12.Click
+        Me.Disable_Detail_Edit()
+        index_DB = "Sub_name"
+        Me.Panel6.Visible = True
+        'lblName.Text = "ชื่อสถานีไฟฟ้า : :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT Sub_name, ID_SUB ,Feeder FROM counter.VSPP_SUB WHERE ID_SUB   = '" & Me.DD_sub.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox12.Text = dt.Rows(0)("Sub_name")
+            Me.TextBox17.Text = dt.Rows(0)("Feeder")
+            Me.Label2.Text = dt.Rows(0)("Sub_name")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub LinkButton13_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles LinkButton13.Click
+        Me.Disable_Detail_Edit()
+        index_DB = "Feeder"
+        Me.Panel7.Visible = True
+        'lblName.Text = "ชื่อวงไฟฟ้า : :"
+        Dim dtAdapter As SqlDataAdapter
+        Dim dt As New DataTable
+        strSQL = "SELECT Feeder, Feeder_id FROM counter.VSPP_Feeder WHERE Feeder_id  = '" & Me.DD_feeder.SelectedValue.ToString & "'"
+        dtAdapter = New SqlDataAdapter(strSQL, objConn)
+        objCmd = dtAdapter.SelectCommand
+        '  objCmd.Parameters.Add("@DOCUMENT_ID", SqlDbType.Int).Value = Request.QueryString("DOCUMENT_ID")
+        dtAdapter.Fill(dt)
+
+        If dt.Rows.Count > 0 Then
+            ' Me.ImgPic.ImageUrl = "ViewImg.aspx?FilesID=" & dt.Rows(0)("FilesID")
+            Me.TextBox13.Text = dt.Rows(0)("Feeder")
+            Me.Label2.Text = dt.Rows(0)("Feeder")
+        End If
+        dt = Nothing
+    End Sub
+
+    Protected Sub Page_Unload(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Unload
+        objConn.Close()
+        objConn = Nothing
+    End Sub
+    Protected Sub Show_Detail_Edit(ByVal Edit_Name As String)
+        Me.Label1.Visible = True
+        Me.Label2.Visible = True
+        'Me.Label3.Visible = True
+        'Me.Label3.Text = Edit_Name
+        Me.Label1.Text = "ได้แก้ไขข้อมูลแล้วเสร็จจาก " & Me.Label2.Text & " เป็น  " & Edit_Name
+        Me.Label2.Visible = False
+    End Sub
+    Protected Sub Disable_Detail_Edit()
+        Me.Panel1.Visible = False
+        Me.Panel2.Visible = False
+        Me.Panel3.Visible = False
+        Me.Panel4.Visible = False
+        Me.Panel5.Visible = False
+        Me.Panel6.Visible = False
+        Me.Panel7.Visible = False
+        Me.Label1.Visible = False
+    End Sub
+    Protected Sub btnUpload_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "UPDATE counter.VSPP_GEN SET GEN_TYPE = @GEN_TYPE WHERE VSPP_GEN_ID = @VSPP_GEN_ID "
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@GEN_TYPE", SqlDbType.VarChar).Value = TextBox3.Text
+        objCmd.Parameters.Add("@VSPP_GEN_ID", SqlDbType.VarChar).Value = Me.DD_gen.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox3.Text, "GEN_TYPE", UserLogin.UserName)
+        DD_gen.DataBind()
+        Show_Detail_Edit(TextBox3.Text)
+        TextBox3.Text = ""
+        Me.Panel1.Visible = False
+
+    End Sub
+    Protected Sub btnDel_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDel.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        '*** Delete Rows ***'
+        strSQL = "DELETE FROM counter.VSPP_GEN  " & _
+               " WHERE VSPP_GEN_ID = @VSPP_GEN_ID "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@VSPP_GEN_ID", SqlDbType.Int).Value = Me.DD_gen.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("DELETE", Me.TextBox3.Text, "-", "GEN_TYPE", UserLogin.UserName)
+        DD_gen.DataBind()
+        ' Me.lblStatus.Text = "Delete Successfully. Click <a href='ListPicture.aspx'>here</a> to view."
+    End Sub
+    Protected Sub Button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button1.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        'Me.pnlForm.Visible = False
+        'Me.lblStatus.Text = "แก้ไขข้อมูลเสร็จแล้ว กลับสู่หน้าหลัก. Click <a href='Document.aspx'>here</a> to view."
+        If Me.TextBox3.Text = "" Then
+            'Me.lblStatus.Text = "โปรดกรอกรายละเอียดให้ครบ."
+        Else
+            'Update_Work()
+            '*** Update Name ***'
+            'If index_DB = "VSPP_OIL" Then
+            strSQL = "UPDATE counter.VSPP_OIL SET OIL_TYPE = @OIL_TYPE WHERE OIL_ID = @OIL_ID "
+            objCmd = New SqlCommand(strSQL, objConn)
+            objCmd.Parameters.Add("@OIL_TYPE", SqlDbType.VarChar).Value = TextBox8.Text
+            objCmd.Parameters.Add("@OIL_ID", SqlDbType.VarChar).Value = Me.DD_oil.SelectedValue.ToString
+            'ElseIf index_DB = "ADDER_TYPE" Then
+            '    strSQL = "UPDATE VSPP_ADDER SET ADDER_TYPE = @ADDER_TYPE WHERE ADDER_ID = @ADDER_ID "
+            '    objCmd = New SqlCommand(strSQL, objConn)
+            '    objCmd.Parameters.Add("@ADDER_TYPE", SqlDbType.VarChar).Value = TextBox3.Text
+            '    objCmd.Parameters.Add("@ADDER_ID", SqlDbType.VarChar).Value = Me.DD_adder.SelectedValue.ToString
+            'End If
+            objCmd.ExecuteNonQuery()
+            Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox8.Text, "OIL_TYPE", UserLogin.UserName)
+            DD_oil.DataBind()
+            Show_Detail_Edit(TextBox8.Text)
+            TextBox8.Text = ""
+            Me.Panel2.Visible = False
+            'Me.lblStatus.Text = "แก้ไขข้อมูลเสร็จแล้ว กลับสู่หน้าหลัก. Click <a href='Document.aspx'>here</a> to view."
+        End If
+    End Sub
+    Protected Sub Button7_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button7.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "DELETE FROM counter.VSPP_OIL  " & _
+               " WHERE OIL_ID = @OIL_ID "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@OIL_ID", SqlDbType.Int).Value = Me.DD_oil.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("DELETE", Me.TextBox8.Text, "-", "OIL_TYPE", UserLogin.UserName)
+        DD_oil.DataBind()
+    End Sub
+    Protected Sub Button2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button2.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "UPDATE counter.VSPP_ADDER_TYPE SET ADDER_TYPE = @ADDER_TYPE ,Price = @Price WHERE ADDER_ID = @ADDER_ID "
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@Price", SqlDbType.VarChar).Value = TextBox14.Text
+        objCmd.Parameters.Add("@ADDER_TYPE", SqlDbType.VarChar).Value = TextBox9.Text
+        objCmd.Parameters.Add("@ADDER_ID", SqlDbType.VarChar).Value = Me.DD_adder.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("MODIFY", "", TextBox14.Text, "Price", UserLogin.UserName)
+        If Me.Label2.Text <> TextBox9.Text Then
+            Show_Detail_Edit(TextBox9.Text)
+            TextBox9.Text = ""
+            Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox9.Text, "ADDER_TYPE", UserLogin.UserName)
+        End If
+        DD_adder.DataBind()
+        Me.Panel3.Visible = False
+    End Sub
+    Protected Sub Button8_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button8.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "DELETE FROM counter.VSPP_ADDER_TYPE  " & _
+                       " WHERE ADDER_ID = @ADDER_ID "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@ADDER_ID", SqlDbType.Int).Value = Me.DD_adder.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("DELETE", Me.TextBox9.Text, "-", "ADDER_TYPE", UserLogin.UserName)
+        DD_adder.DataBind()
+    End Sub
+    Protected Sub Button3_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button3.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "UPDATE counter.VSPP_SIDE SET SIDE_TYPE = @SIDE_TYPE WHERE SIDE_ID = @SIDE_ID "
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@SIDE_TYPE", SqlDbType.VarChar).Value = TextBox10.Text
+        objCmd.Parameters.Add("@SIDE_ID", SqlDbType.VarChar).Value = Me.DD_side.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        'SELECT SIDE_TYPE, SIDE_ID FROM VSPP_SIDE
+        Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox10.Text, "SIDE_TYPE", UserLogin.UserName)
+        objCmd.ExecuteNonQuery()
+        DD_side.DataBind()
+        Show_Detail_Edit(TextBox10.Text)
+        TextBox10.Text = ""
+        Me.Panel4.Visible = False
+    End Sub
+    Protected Sub Button9_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button9.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "DELETE FROM counter.VSPP_SIDE  " & _
+                               " WHERE SIDE_ID = @SIDE_ID "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@SIDE_ID", SqlDbType.Int).Value = Me.DD_side.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("DELETE", Me.TextBox10.Text, "-", "SIDE_TYPE", UserLogin.UserName)
+        DD_side.DataBind()
+    End Sub
+
+
+    Protected Sub Button4_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button4.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "UPDATE counter.VSPP_STATUS SET Status_Type = @Status_Type WHERE ID_STATUS = @ID_STATUS "
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@Status_Type", SqlDbType.VarChar).Value = TextBox11.Text
+        objCmd.Parameters.Add("@ID_STATUS", SqlDbType.VarChar).Value = Me.DD_status.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        'SELECT Status_Type, ID_STATUS FROM VSPP_STATUS
+        Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox11.Text, "Status_Type", UserLogin.UserName)
+        objCmd.ExecuteNonQuery()
+        DD_status.DataBind()
+        Show_Detail_Edit(TextBox11.Text)
+        TextBox11.Text = ""
+        Me.Panel5.Visible = False
+    End Sub
+    Protected Sub Button10_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button10.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "DELETE FROM counter.VSPP_STATUS  " & _
+                                       " WHERE ID_STATUS = @ID_STATUS "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@ID_STATUS", SqlDbType.Int).Value = Me.DD_status.SelectedValue.ToString
+        Me.UPDATE_STATUS("DELETE", Me.TextBox11.Text, "-", "Status_Type", UserLogin.UserName)
+        objCmd.ExecuteNonQuery()
+        DD_status.DataBind()
+    End Sub
+
+    Protected Sub Button5_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button5.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "UPDATE counter.VSPP_SUB SET Sub_name = @Sub_name,Feeder = @Feeder WHERE ID_SUB = @ID_SUB "
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@Sub_name", SqlDbType.VarChar).Value = TextBox12.Text
+        objCmd.Parameters.Add("@Feeder", SqlDbType.VarChar).Value = TextBox17.Text
+        objCmd.Parameters.Add("@ID_SUB", SqlDbType.VarChar).Value = Me.DD_sub.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox12.Text, "Sub_name", UserLogin.UserName)
+        'SELECT Sub_name, ID_SUB FROM VSPP_SUB
+        objCmd.ExecuteNonQuery()
+        DD_sub.DataBind()
+        Show_Detail_Edit(TextBox12.Text)
+        TextBox12.Text = ""
+        TextBox17.Text = ""
+        Me.Panel6.Visible = False
+    End Sub
+    Protected Sub Button11_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button11.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "DELETE FROM counter.VSPP_SUB  " & _
+                                        " WHERE ID_SUB = @ID_SUB "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@ID_SUB", SqlDbType.Int).Value = Me.DD_sub.SelectedValue.ToString
+        Me.UPDATE_STATUS("DELETE", Me.TextBox12.Text, "-", "Sub_name", UserLogin.UserName)
+        objCmd.ExecuteNonQuery()
+        DD_sub.DataBind()
+    End Sub
+
+    Protected Sub Button6_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button6.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "UPDATE counter.VSPP_Feeder SET Feeder = @Feeder WHERE Feeder_id = @Feeder_id "
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@Feeder", SqlDbType.VarChar).Value = TextBox13.Text
+        objCmd.Parameters.Add("@Feeder_id", SqlDbType.VarChar).Value = Me.DD_feeder.SelectedValue.ToString
+        objCmd.ExecuteNonQuery()
+        'SELECT Feeder, Feeder_id FROM VSPP_Feede
+        Me.UPDATE_STATUS("MODIFY", Me.Label2.Text, TextBox13.Text, "Feeder", UserLogin.UserName)
+        objCmd.ExecuteNonQuery()
+        DD_feeder.DataBind()
+        Show_Detail_Edit(TextBox13.Text)
+        TextBox13.Text = ""
+        Me.Panel7.Visible = False
+    End Sub
+    Protected Sub Button12_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button12.Click
+        Dim UserLogin As UserClass = CType(Session("User"), UserClass)
+        strSQL = "DELETE FROM counter.VSPP_Feeder  " & _
+                                               " WHERE Feeder_id = @Feeder_id "
+
+        objCmd = New SqlCommand(strSQL, objConn)
+        objCmd.Parameters.Add("@Feeder_id", SqlDbType.Int).Value = Me.DD_feeder.SelectedValue.ToString
+        Me.UPDATE_STATUS("DELETE", Me.TextBox13.Text, "-", "Feeder", UserLogin.UserName)
+        objCmd.ExecuteNonQuery()
+        DD_feeder.DataBind()
+    End Sub
+End Class
